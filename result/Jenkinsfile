@@ -35,5 +35,11 @@ pipeline {
           always{
             echo 'Building multibranch pipeline for result is completed..'
           }
+          failure{
+            slackSend (channel: "training", message: "Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open)")
+          }
+          success{
+            slackSend (channel: "training", message: "Build Succeeded - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open)")
+          }
         }
 }
