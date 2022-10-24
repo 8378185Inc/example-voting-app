@@ -1,0 +1,75 @@
+pipeline {
+    agent any
+
+    tools {
+      maven 'maven 3.8.6'
+    }
+
+    stages {
+        stage('Build') {
+
+          when{
+            changeset "**/worker/**"
+          }
+            steps {
+                echo 'Compiling worker app...'
+                dir('worker') {
+                  sh 'mvn compile'
+                }
+            }
+        }
+        stage('Test') {
+          when{
+            changeset "**/worker/**"
+          }
+            steps {
+                echo 'Running Unit Tests on worker app...'
+                dir('worker'){
+                  sh 'mvn clean test'
+                }
+            }
+        }
+        stage("Package") {
+          when{
+            branch 'master'
+            changeset "**/worker/**"
+          }
+            steps{
+              echo 'Packaging worker app'
+              dir('worker'){
+                sh 'mvn package -DskipTests'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+              }
+            }
+          }
+/**
+        stage('Deploy') {
+          when {
+            expression {
+              currentBuild.result == null || currentBuild.result == 'SUCCESS'
+            }
+          }  
+            steps {
+               echo 'Deploying....'
+               sh 'make publish'
+          
+            }
+        }
+        stage('Example') {
+          environment {
+            DEBUG_FLAGS = '-g'
+            BITBUCKET_COMMON_CREDS = credentials('jenkins-bitbucket-common-creds')
+          }
+            steps {
+              echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+              sh("kubectl --kubeconfig $MY_KUBECONFIG get pods")
+            }
+        }
+**/
+    }
+        post{
+          always{
+            echo 'Building multibranch pipeline for worker is completed..'
+          }
+        }
+}
