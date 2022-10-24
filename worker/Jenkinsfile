@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    tools {
+      maven 'maven 3.8.6'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Compiling worker app...'
+                dir() {
+                  sh 'mvn compile'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Packing worker app'
+            }
+        }
+/**
+        stage('Deploy') {
+          when {
+            expression {
+              currentBuild.result == null || currentBuild.result == 'SUCCESS'
+            }
+          }  
+            steps {
+               echo 'Deploying....'
+               sh 'make publish'
+          
+            }
+        }
+        stage('Example') {
+          environment {
+            DEBUG_FLAGS = '-g'
+            BITBUCKET_COMMON_CREDS = credentials('jenkins-bitbucket-common-creds')
+          }
+            steps {
+              echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+              sh("kubectl --kubeconfig $MY_KUBECONFIG get pods")
+            }
+        }
+**/
+    }
+        post{
+          always{
+            echo 'Building multibranch pipeline for worker is completed..'
+          }
+        }
+}
