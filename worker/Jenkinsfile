@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compiling worker app...'
-                dir() {
+                dir('worker') {
                   sh 'mvn compile'
                 }
             }
