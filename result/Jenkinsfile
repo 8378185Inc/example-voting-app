@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    tools {
+      nodejs 'NodeJS18110'
+    }
+
+    stages {
+        stage('Build') {
+
+          when{
+            changeset "**/result/**"
+          }
+            steps {
+                echo 'Compiling result app...'
+                dir('result') {
+                  sh 'npm install'
+                }
+            }
+        }
+        stage('Test') {
+          when{
+            changeset "**/result/**"
+          }
+            steps {
+                echo 'Running Unit Tests on result app...'
+                dir('result'){
+                  sh 'npm install'
+                  sh 'npm test'
+                }
+            }
+        }
+/**
+        stage("Package") {
+          when{
+            branch 'master'
+            changeset "**/worker/**"
+          }
+            steps{
+              echo 'Packaging worker app'
+              dir('worker'){
+                sh 'mvn package -DskipTests'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+              }
+            }
+          }
+        stage('Deploy') {
+          when {
+            expression {
+              currentBuild.result == null || currentBuild.result == 'SUCCESS'
+            }
+          }  
+            steps {
+               echo 'Deploying....'
+               sh 'make publish'
+          
+            }
+        }
+        stage('Example') {
+          environment {
+            DEBUG_FLAGS = '-g'
+            BITBUCKET_COMMON_CREDS = credentials('jenkins-bitbucket-common-creds')
+          }
+            steps {
+              echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+              sh("kubectl --kubeconfig $MY_KUBECONFIG get pods")
+            }
+        }
+**/
+    }
+        post{
+          always{
+            echo 'Building multibranch pipeline for result is completed..'
+          }
+        }
+}
