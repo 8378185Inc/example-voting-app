@@ -1,8 +1,9 @@
 pipeline {
-    agent any
+    agent{
 
-    tools {
-      nodejs 'NodeJS18110'
+      docker {
+        image 'node:8.16.0-alpine'
+      }
     }
 
     stages {
@@ -25,7 +26,6 @@ pipeline {
             steps {
                 echo 'Running Unit Tests on result app...'
                 dir('result'){
-                  sh 'npm install'
                   sh 'npm test'
                 }
             }
