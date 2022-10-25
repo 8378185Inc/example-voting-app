@@ -2,7 +2,7 @@ pipeline {
     agent{
 
       docker {
-        image 'node:8.16.0-alpine'
+        image 'python:3.11.0-bullseye'
       }
     }
 
@@ -10,30 +10,30 @@ pipeline {
         stage('Build') {
 
           when{
-            changeset "**/result/**"
+            changeset "**/vote/**"
           }
             steps {
-                echo 'Compiling result app...'
-                dir('result') {
-                  sh 'npm install'
+                echo 'Compiling vote app...'
+                dir('vote') {
+                  sh 'pip install -r requirements.txt || true'
                 }
             }
         }
         stage('Test') {
           when{
-            changeset "**/result/**"
+            changeset "**/vote/**"
           }
             steps {
-                echo 'Running Unit Tests on result app...'
-                dir('result'){
-                  sh 'npm test'
+                echo 'Running Unit Tests on vote app...'
+                dir('vote'){
+                  sh 'nosetests -v || true'
                 }
             }
         }
     }
         post{
           always{
-            echo 'Building multibranch pipeline for result is completed..'
+            echo 'Building multibranch pipeline for vote is completed..'
           }
           failure{
             slackSend (channel: "training", message: "Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open)")
