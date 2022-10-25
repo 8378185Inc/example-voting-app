@@ -1,10 +1,7 @@
 pipeline {
 
     agent {
-<<<<<<< HEAD
-=======
-
->>>>>>> 32f963961c1854fd56ed394b3a92307d1a0d8f83
+      
       docker {
         image 'maven:3.6.1-jdk-8-slim'
         args '-v $HOME/.m2:/root/.m2'
