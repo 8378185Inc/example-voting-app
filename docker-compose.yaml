@@ -13,7 +13,7 @@ services:
     image: rotimi98/vote:latest
     build: ./vote
     ports:
-    - 6002:80
+    - 5000:80
     depends_on:
     - redis
     networks:
@@ -38,7 +38,7 @@ services:
     image: rotimi98/result:latest
     build: ./result
     ports:
-    - 6001:4000
+    - 5001:4000
     depends_on:
     - db
     networks:
