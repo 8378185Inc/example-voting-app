@@ -11,6 +11,7 @@ services:
 
   vote:
     image: rotimi98/vote:latest
+    build: ./vote
     ports:
     - 6002:80
     depends_on:
@@ -35,6 +36,7 @@ services:
 
   result:
     image: rotimi98/result:latest
+    build: ./result
     ports:
     - 6001:4000
     depends_on:
@@ -44,6 +46,7 @@ services:
 
   worker:
     image: rotimi98/worker:latest
+    build: ./worker
     depends_on:
     - redis
     - db
