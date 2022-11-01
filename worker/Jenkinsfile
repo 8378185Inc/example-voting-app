@@ -41,6 +41,7 @@ pipeline {
         }
         stage("Package") {
           when{
+            branch 'master'
             changeset "**/worker/**"
           }
         agent {
@@ -62,6 +63,7 @@ pipeline {
           agent any
           when{
             changeset "**/worker/**"
+            branch 'master'
           }
           steps{
             echo 'Packaging worker app with docker'
@@ -70,6 +72,7 @@ pipeline {
               {
                 def workerImage = docker.build("rotimi98/worker:v${env.BUILD_ID}", "./worker")
                 workerImage.push()
+                workerImage.push("${env.BRANCH_NAME}")
                 workerImage.push("latest")
               }
             }
