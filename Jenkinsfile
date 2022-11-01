@@ -132,7 +132,6 @@ pipeline {
             }
           }
         }
-    stages {
         stage('vote-build') {
           when{
             changeset "**/vote/**"
