@@ -51,6 +51,7 @@ pipeline {
       }
       when {
         changeset '**/worker/**'
+        branch 'master'
       }
       steps {
         echo 'Packaging worker app into a jarfile'
@@ -66,6 +67,7 @@ pipeline {
       agent any
       when {
         changeset '**/worker/**'
+        branch 'master'
       }
       steps {
         echo 'Packaging worker app with docker'
@@ -124,6 +126,7 @@ pipeline {
       agent any
       when {
         changeset '**/result/**'
+        branch 'master'
       }
       steps {
         echo 'Packaging result app with docker'
@@ -182,6 +185,7 @@ pipeline {
       agent any
       when {
         changeset '**/vote/**'
+        branch 'master'
       }
       steps {
         echo 'Packaging vote app with docker'
@@ -200,6 +204,8 @@ pipeline {
 
     stage('deploy to dev') {
       agent any
+      when {
+        branch 'master'
       steps {
         sh 'docker-compose up -d'
       }
