@@ -223,7 +223,7 @@ pipeline {
       }
     }
 
-
+/*
     stage("Quality Gate") {
         steps {
             timeout(time: 1, unit: 'HOURS') {
@@ -233,6 +233,7 @@ pipeline {
             }
         }
     }
+*/
 
     stage('deploy to dev') {
       agent any
